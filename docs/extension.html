@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="dark">
   <title>Quarry - Browser extension</title>
   <meta name="description" content="The Quarry browser extension for Chrome and Firefox: open any page, press Download, watch the progress. Local server only.">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
@@ -39,6 +39,10 @@
         <em>Download this page</em>, watch the progress - the download keeps
         running even if you close the popup.
       </p>
+      <div class="btn-row">
+        <a class="btn" href="https://github.com/KelvinZeroo/Quarry/releases/latest/download/quarry-chrome.zip">Download for Chrome</a>
+        <a class="btn ghost" href="https://github.com/KelvinZeroo/Quarry/releases/latest/download/quarry-firefox.zip">Download for Firefox</a>
+      </div>
     </section>
 
     <section id="what">
@@ -90,27 +94,38 @@
 
     <section id="chrome">
       <p class="eyebrow">03 / Chrome / Edge</p>
-      <h2>Load it in Chrome or Edge</h2>
+      <h2>Install in Chrome or Edge</h2>
       <ol class="steps">
+        <li>Download <code>quarry-chrome.zip</code> (button above) and extract
+            it - you get a <code>quarry</code> folder.
+            Using the repo instead? The <code>extension/</code> folder works
+            the same way.</li>
         <li>Open <code>chrome://extensions</code></li>
-        <li>Turn on <strong>Developer mode</strong></li>
-        <li>Click <strong>Load unpacked</strong> and select the
-            <code>extension</code> folder</li>
-        <li>Pin the Quarry icon to the toolbar</li>
+        <li>Turn on <strong>Developer mode</strong> - the switch in the top
+            right corner</li>
+        <li>Click <strong>Load unpacked</strong></li>
+        <li>Select the extracted <code>quarry</code> folder - the Quarry card
+            appears</li>
+        <li>Pin it: puzzle icon in the toolbar -&gt; pin Quarry</li>
       </ol>
+      <p class="note">Update later: extract the new zip, then press the refresh
+        arrow on the Quarry card.</p>
     </section>
 
     <section id="firefox">
       <p class="eyebrow">04 / Firefox</p>
-      <h2>Load it in Firefox</h2>
+      <h2>Install in Firefox</h2>
       <ol class="steps">
+        <li>Download <code>quarry-firefox.zip</code> (button above) and extract
+            it - you get a <code>quarry</code> folder</li>
         <li>Open <code>about:debugging#/runtime/this-firefox</code></li>
-        <li>Click <strong>Load Temporary Add-on...</strong> and select
-            <code>extension/manifest.json</code></li>
-        <li>The icon appears in the toolbar</li>
+        <li>Click <strong>Load Temporary Add-on...</strong></li>
+        <li>Select <code>quarry/manifest.json</code> inside the extracted
+            folder</li>
+        <li>The Quarry icon appears in the toolbar</li>
       </ol>
       <div class="callout">
-        <p>Firefox does not keep unsigned extensions after a restart. Load it
+        <p>Firefox does not keep unsigned add-ons after a restart. Load it
            again from <code>about:debugging</code>, or use a Developer/ESR
            build with <code>xpinstall.signatures.required=false</code> for a
            permanent install.</p>

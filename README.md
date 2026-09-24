@@ -20,6 +20,9 @@ from your browser.
 
 `.\download.ps1` is kept as an alias of `quarry.ps1`.
 
+No git? Browser zips: [Releases](https://github.com/KelvinZeroo/Quarry/releases)
+(`quarry-chrome.zip` / `quarry-firefox.zip`).
+
 For the browser button:
 
 ```powershell
