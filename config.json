@@ -1,0 +1,9 @@
+{
+  "downloadDir": "",
+  "port": 8765,
+  "workers": 8,
+  "delay": 0.2,
+  "maxImages": 0,
+  "maxGalleries": 10,
+  "proxy": ""
+}

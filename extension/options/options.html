@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Quarry - Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main>
+    <h1>Quarry <span>Settings</span></h1>
+    <p class="lead">Everything here is stored in your browser only.</p>
+
+    <form id="form">
+      <label for="destDir">
+        Download folder
+        <input type="text" id="destDir" placeholder="Leave empty to use the default folder" spellcheck="false">
+        <small id="destHint">Default: ...</small>
+      </label>
+
+      <label for="port">
+        Server port
+        <input type="number" id="port" min="1" max="65535" placeholder="8765">
+        <small>Must match "port" in config.json (default 8765).</small>
+      </label>
+
+      <label for="maxImages">
+        Max files per download
+        <input type="number" id="maxImages" min="0" placeholder="0 = no limit">
+        <small>0 downloads everything the page offers.</small>
+      </label>
+
+      <div class="row">
+        <button type="submit" class="primary">Save</button>
+        <button type="button" id="resetBtn" class="ghost">Use defaults</button>
+        <span id="status" class="status"></span>
+      </div>
+    </form>
+
+    <section class="help">
+      <h2>Server status</h2>
+      <p id="health" class="health">Checking...</p>
+      <button type="button" id="retryBtn" class="ghost small">Re-check</button>
+    </section>
+  </main>
+
+  <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Quarry</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <span class="logo">Quarry<b>.</b></span>
+    <span id="dot" class="dot off" title="Server status"></span>
+  </header>
+
+  <section class="page">
+    <div id="pageTitle" class="title">...</div>
+    <div id="pageUrl" class="url"></div>
+  </section>
+
+  <section class="folder">
+    <span class="folder-label">Save to</span>
+    <span id="folderPath" class="folder-path">...</span>
+  </section>
+
+  <button id="downloadBtn" class="primary">Download this page</button>
+
+  <section id="progress" class="progress" hidden>
+    <div id="progressText" class="progress-text">Starting...</div>
+    <div class="bar"><div id="barFill" class="bar-fill"></div></div>
+    <div id="progressCounts" class="counts"></div>
+  </section>
+
+  <section id="result" class="result" hidden>
+    <div id="resultText" class="result-text"></div>
+    <div class="result-actions">
+      <button id="revealBtn" class="small">Open folder</button>
+      <button id="againBtn" class="small ghost">Download again</button>
+    </div>
+  </section>
+
+  <section id="hint" class="hint" hidden></section>
+
+  <footer>
+    <button id="settingsBtn" class="link">Settings</button>
+    <span id="version" class="version"></span>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>

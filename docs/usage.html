@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Quarry - Usage</title>
+  <meta name="description" content="Quarry CLI reference: every flag, where files go, file and folder naming, info.txt, re-run behavior and the local server API.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">Quarry<b>.</b></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="install.html">Install</a></li>
+        <li><a href="usage.html" aria-current="page">Usage</a></li>
+        <li><a href="extension.html">Extension</a></li>
+        <li><a class="btn btn-small" href="install.html">Get started</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+    <section class="page-head">
+      <p class="eyebrow">Usage</p>
+      <h1>One command, every site</h1>
+      <p class="lead">
+        The site is detected from the URL; unknown sites fall back to generic
+        mode (grabs every image/GIF/video the page offers). Same command for a
+        gallery, a search page or any page at all.
+      </p>
+    </section>
+
+    <section id="command">
+      <p class="eyebrow">01 / The command</p>
+      <h2>The one command</h2>
+      <div class="terminal tight" role="img" aria-label="Main command">
+        <div class="terminal-bar">
+          <span></span><span></span><span></span>
+          <em>PowerShell</em>
+        </div>
+        <code><span class="prompt">&gt;</span> .\quarry.ps1 &lt;url&gt;</code>
+      </div>
+      <p class="note">
+        That is it. PowerShell users can also call the engine directly:
+        <code>python main.py &lt;url&gt; [flags]</code> (same flags with
+        <code>--</code>). <code>.\download.ps1</code> is kept as an alias.
+      </p>
+    </section>
+
+    <section id="options">
+      <p class="eyebrow">02 / Options</p>
+      <h2>All flags</h2>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr><th>Flag</th><th>What it does</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>-Out "D:\Media"</code></td><td>Choose the download folder.</td></tr>
+            <tr><td><code>-MaxImages 20</code></td><td>Stop after 20 files.</td></tr>
+            <tr><td><code>-MaxGalleries 5</code></td><td>Search page: only 5 galleries.</td></tr>
+            <tr><td><code>-Workers 4</code></td><td>Slower, politer.</td></tr>
+            <tr><td><code>-Delay 1.0</code></td><td>1s pause between requests.</td></tr>
+            <tr><td><code>-Proxy http://127.0.0.1:7890</code></td><td>HTTP/SOCKS5 proxy.</td></tr>
+            <tr><td><code>-DryRun</code></td><td>Resolve URLs, download nothing.</td></tr>
+            <tr><td><code>-Force</code></td><td>Re-download even completed files.</td></tr>
+            <tr><td><code>-Open</code></td><td>Open the folder when it finishes.</td></tr>
+            <tr><td><code>-Quiet</code></td><td>Summary only (no per-file lines).</td></tr>
+            <tr><td><code>-Site erome</code></td><td>Advanced: force an adapter
+                (<code>imagefap</code>, <code>pornpics</code>, <code>erome</code>,
+                <code>rule34</code>, <code>generic</code>).</td></tr>
+            <tr><td><code>-File urls.txt</code></td><td>Batch: one URL per line,
+                <code>#</code> starts a comment.</td></tr>
+            <tr><td><code>-ListSites</code></td><td>Show supported sites.</td></tr>
+            <tr><td><code>-Version</code></td><td>Print version and exit.</td></tr>
+            <tr><td><code>-Help</code></td><td>Full flag reference.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="folders">
+      <p class="eyebrow">03 / Where files go</p>
+      <h2>Where files go</h2>
+      <p class="note">Resolution order:</p>
+      <ul class="dots">
+        <li><code>-Out</code> flag (CLI) or the folder in the extension settings</li>
+        <li><code>downloadDir</code> in <code>config.json</code></li>
+        <li><code>&lt;you&gt;\Downloads\Quarry</code></li>
+      </ul>
+      <p class="note">One folder per site, one per gallery, short names:</p>
+      <pre class="block">Downloads\Quarry\
+|-- imagefap\14340248_mi-3f7c\0001_546949874.jpg ...
+|-- erome\abc1234_hot-9f1e\0001_NgyE88io_720p.mp4 ...
+|-- rule34\tag_blonde-hair\0001_1001.jpg ...
+|-- example.com\some-post-title\0001_photo.jpg ...   &lt;- generic mode
+|-- .manifests\...                                   &lt;- bookkeeping (skip list)
+`-- .cookies\cookies.json                            &lt;- saved session cookies</pre>
+      <p class="note">
+        File extensions are verified against the server's content type and
+        repaired when wrong (a GIF behind a <code>.jpg</code> URL is saved as
+        <code>.gif</code>).
+      </p>
+
+      <h3>File and folder names</h3>
+      <ul class="dots">
+        <li><strong>Files:</strong> <code>0001_short-name.ext</code> - a 4-digit
+            index first (sorts cleanly), then at most 16 characters of the
+            site's filename. No usable name means <code>0001.jpg</code>.</li>
+        <li><strong>Folders:</strong> at most 16 characters. Longer gallery
+            names are cut and get a 4-character suffix, so two different
+            galleries can never share a folder.</li>
+        <li><strong><code>info.txt</code>:</strong> every gallery folder
+            contains one - site, title, the source URL (click it to get back to
+            the page), timestamp, result counts and the list of files inside.
+            Refreshed on every run.</li>
+      </ul>
+    </section>
+
+    <section id="rerun">
+      <p class="eyebrow">04 / Re-running</p>
+      <h2>Run it twice, download nothing</h2>
+      <p class="note">
+        Every gallery keeps a manifest. Run the same command again any time:
+      </p>
+      <ul class="dots">
+        <li>files already downloaded are <strong>skipped</strong></li>
+        <li>failed files are <strong>retried</strong> automatically</li>
+        <li>deleted files are downloaded again</li>
+        <li><code>-Force</code> redownloads everything</li>
+      </ul>
+    </section>
+
+    <section id="listings">
+      <p class="eyebrow">05 / Listing pages</p>
+      <h2>Search, tag and profile pages</h2>
+      <p class="note">
+        Paste a search, tag, category or profile URL and Quarry crawls the
+        galleries it links to (capped by <code>maxGalleries</code>, default 10):
+      </p>
+      <div class="terminal tight" role="img" aria-label="Listing example">
+        <div class="terminal-bar">
+          <span></span><span></span><span></span>
+          <em>PowerShell</em>
+        </div>
+        <code><span class="prompt">&gt;</span> .\quarry.ps1 "https://www.pornpics.com/tags/cosplay/" -MaxGalleries 3</code>
+      </div>
+    </section>
+
+    <section id="api">
+      <p class="eyebrow">06 / Server API</p>
+      <h2>Local server (optional)</h2>
+      <p class="note">
+        For scripts, <code>http://127.0.0.1:8765</code> - localhost only;
+        requests from other websites are rejected:
+      </p>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr><th>Endpoint</th><th>Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>GET /health</code></td>
+              <td><code>{"ok":true,"version":...,"downloadDir":...}</code></td>
+            </tr>
+            <tr>
+              <td><code>POST /download</code></td>
+              <td>body <code>{"url":...,"destDir":...,"cookies":[...],"pageMedia":[...],"maxImages":n}</code>
+                  -&gt; <code>{"jobId":...}</code></td>
+            </tr>
+            <tr>
+              <td><code>GET /status/&lt;jobId&gt;</code></td>
+              <td>progress: <code>state</code>, <code>title</code>,
+                  <code>folder</code>, <code>total</code>, <code>downloaded</code>,
+                  <code>skipped</code>, <code>failed</code>, <code>error</code>,
+                  <code>log</code></td>
+            </tr>
+            <tr>
+              <td><code>POST /reveal</code></td>
+              <td>body <code>{"path":"..."}</code> opens that folder in the file
+                  manager</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="guides">
+      <p class="eyebrow">07 / Guides</p>
+      <h2>Deep-reading docs</h2>
+      <div class="grid">
+        <a class="doc-link" href="guides/setup.md">
+          <h3>setup.md</h3>
+          <p>Install, configuration, loading the extension, troubleshooting.</p>
+        </a>
+        <a class="doc-link" href="guides/usage.md">
+          <h3>usage.md</h3>
+          <p>All CLI flags, folder layout, browser button, server API.</p>
+        </a>
+        <a class="doc-link" href="guides/sites.md">
+          <h3>sites.md</h3>
+          <p>Supported sites, generic mode limits, per-site tips.</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      <strong>Personal use only.</strong> You are responsible for what you
+      download and where you store it. Respect the terms of service and
+      copyright of every site you use.
+    </p>
+    <p class="dim">Quarry - runs locally, no telemetry, no accounts.</p>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+</body>
+</html>

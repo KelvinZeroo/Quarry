@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Quarry",
+  "version": "1.0.0",
+  "description": "Download images, GIFs and videos from the current page with your local Quarry server.",
+  "permissions": ["activeTab", "storage", "cookies"],
+  "host_permissions": ["<all_urls>", "http://127.0.0.1/*"],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Quarry"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}

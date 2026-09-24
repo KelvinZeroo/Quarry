@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Quarry - download any page</title>
+  <meta name="description" content="Quarry: one PowerShell command or one browser button to download images, GIFs and videos from any page.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">Quarry<b>.</b></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="install.html">Install</a></li>
+        <li><a href="usage.html">Usage</a></li>
+        <li><a href="extension.html">Extension</a></li>
+        <li><a class="btn btn-small" href="install.html">Get started</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+    <section class="hero">
+      <h1>Download any page.<br>One command, one button.</h1>
+      <p class="lead">
+        Quarry grabs images, GIFs and videos from the page you are on.
+        Runs locally on your machine, in PowerShell or with a browser extension
+        for Chrome and Firefox.
+      </p>
+      <div class="hero-actions">
+        <a class="btn" href="install.html">Get started</a>
+        <a class="btn ghost" href="usage.html">Read the docs</a>
+      </div>
+
+      <div class="terminal" role="img" aria-label="Example command">
+        <div class="terminal-bar">
+          <span></span><span></span><span></span>
+          <em>PowerShell</em>
+        </div>
+        <code><span class="prompt">&gt;</span> .\quarry.ps1 "https://www.erome.com/a/abc1234"</code>
+        <code class="dim"><span class="prompt">&gt;</span> <span id="typedLine"></span><span class="caret">&nbsp;</span></code>
+      </div>
+    </section>
+
+    <section class="cards" id="how">
+      <p class="eyebrow">01 / How it works</p>
+      <h2>How it works</h2>
+      <div class="grid">
+        <article class="card">
+          <span class="step">1</span>
+          <h3>Install</h3>
+          <p>Run <code>.\install.ps1</code>. It checks Python, installs the
+             dependencies and creates <code>config.json</code>.</p>
+        </article>
+        <article class="card">
+          <span class="step">2</span>
+          <h3>Paste a URL</h3>
+          <p><code>.\quarry.ps1 &lt;url&gt;</code> detects the site by itself.
+             No flags to remember - the folder, retries and skip-list are handled
+             for you.</p>
+        </article>
+        <article class="card">
+          <span class="step">3</span>
+          <h3>Or just click</h3>
+          <p>Start the local server, load the extension, open any page and press
+             <em>Download this page</em>. Your login cookies are forwarded, so
+             gated pages work too.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="features">
+      <p class="eyebrow">02 / Features</p>
+      <h2>Why it is pleasant to use</h2>
+      <ul class="feature-list">
+        <li>
+          <strong>One universal command</strong>
+          <span>Gallery, search page or any site at all - same command, site
+                detected automatically.</span>
+        </li>
+        <li>
+          <strong>Clean, predictable files</strong>
+          <span>Short folders, files named <code>0001_...</code>, corrected
+                extensions and an <code>info.txt</code> with the source link.
+                No <code>(1)</code> clutter in your downloads.</span>
+        </li>
+        <li>
+          <strong>Run it twice, download nothing</strong>
+          <span>A manifest skips finished files and retries failed ones, so
+                re-running is instant.</span>
+        </li>
+        <li>
+          <strong>Polite by default</strong>
+          <span>Rate limiting, retries, content checks - small files and error
+                pages never get saved as fake images.</span>
+        </li>
+        <li>
+          <strong>Local and private</strong>
+          <span>The server binds to <code>127.0.0.1</code> only and rejects
+                requests from other websites. Nothing leaves your machine.</span>
+        </li>
+        <li>
+          <strong>Chrome + Firefox</strong>
+          <span>One extension folder loads in both browsers - media is collected
+                from the live page, so lazy-loaded images are included.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="sites" id="sites">
+      <p class="eyebrow">03 / Sites</p>
+      <h2>Works on</h2>
+      <ul class="site-tags">
+        <li>ImageFap</li>
+        <li>PornPics</li>
+        <li>EroMe</li>
+        <li>Rule34</li>
+        <li class="muted">any other page (best effort)</li>
+      </ul>
+      <p class="note">
+        Known sites use purpose-built extractors that resolve full-size
+        originals. Everything else falls back to a generic grabber that takes
+        what the page shows - including media found by the extension in the
+        live DOM. Details and limits:
+        <a href="guides/sites.md">docs/guides/sites.md</a>.
+      </p>
+    </section>
+
+    <section class="cta" id="get-started">
+      <p class="eyebrow">04 / Quick start</p>
+      <h2>Get started</h2>
+      <ol class="steps">
+        <li>Copy the project folder and open PowerShell inside it.</li>
+        <li>Run <code>.\install.ps1</code></li>
+        <li>Run <code>.\start.ps1</code> and load <code>extension/</code>
+            into your browser - or skip straight to
+            <code>.\quarry.ps1 &lt;url&gt;</code>.</li>
+      </ol>
+      <p class="note">Full walkthrough: <a href="install.html">Install</a>
+        | <a href="guides/setup.md">docs/guides/setup.md</a></p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      <strong>Personal use only.</strong> You are responsible for what you
+      download and where you store it. Respect the terms of service and
+      copyright of every site you use.
+    </p>
+    <p class="dim">Quarry - runs locally, no telemetry, no accounts.</p>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+</body>
+</html>
