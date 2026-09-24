@@ -21,10 +21,9 @@
         <span></span><span></span><span></span>
       </button>
       <ul class="nav-links" id="navLinks">
-        <li><a href="install.html">Install</a></li>
+        <li><a href="download.html">Download</a></li>
         <li><a href="usage.html" aria-current="page">Usage</a></li>
-        <li><a href="extension.html">Extension</a></li>
-        <li><a class="btn btn-small" href="install.html">Get started</a></li>
+        <li><a class="btn btn-small" href="download.html">Get started</a></li>
       </ul>
     </nav>
   </header>
@@ -90,8 +89,61 @@
       </div>
     </section>
 
+    <section id="config">
+      <p class="eyebrow">03 / Configuration</p>
+      <h2>config.json</h2>
+      <p class="note">Lives next to <code>quarry.ps1</code>:</p>
+      <pre class="block">{
+  "downloadDir": "",
+  "port": 8765,
+  "workers": 8,
+  "delay": 0.2,
+  "maxImages": 0,
+  "maxGalleries": 10,
+  "proxy": ""
+}</pre>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr><th>Key</th><th>Meaning</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>downloadDir</code></td>
+              <td>Where files go. Empty = <code>&lt;you&gt;\Downloads\Quarry</code>.
+                  <code>-Out</code> and the extension settings override this.</td>
+            </tr>
+            <tr>
+              <td><code>port</code></td>
+              <td>Local server port. Must match the extension setting.</td>
+            </tr>
+            <tr>
+              <td><code>workers</code></td>
+              <td>Parallel file downloads.</td>
+            </tr>
+            <tr>
+              <td><code>delay</code></td>
+              <td>Minimum pause between requests to the same site (seconds).</td>
+            </tr>
+            <tr>
+              <td><code>maxImages</code></td>
+              <td>Cap files per gallery (<code>0</code> = no cap).</td>
+            </tr>
+            <tr>
+              <td><code>maxGalleries</code></td>
+              <td>Cap galleries crawled from a search/tag page.</td>
+            </tr>
+            <tr>
+              <td><code>proxy</code></td>
+              <td>HTTP or SOCKS5 proxy URL, empty = none.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <section id="folders">
-      <p class="eyebrow">03 / Where files go</p>
+      <p class="eyebrow">04 / Where files go</p>
       <h2>Where files go</h2>
       <p class="note">Resolution order:</p>
       <ul class="dots">
@@ -129,7 +181,7 @@
     </section>
 
     <section id="rerun">
-      <p class="eyebrow">04 / Re-running</p>
+      <p class="eyebrow">05 / Re-running</p>
       <h2>Run it twice, download nothing</h2>
       <p class="note">
         Every gallery keeps a manifest. Run the same command again any time:
@@ -143,7 +195,7 @@
     </section>
 
     <section id="listings">
-      <p class="eyebrow">05 / Listing pages</p>
+      <p class="eyebrow">06 / Listing pages</p>
       <h2>Search, tag and profile pages</h2>
       <p class="note">
         Paste a search, tag, category or profile URL and Quarry crawls the
@@ -159,7 +211,7 @@
     </section>
 
     <section id="api">
-      <p class="eyebrow">06 / Server API</p>
+      <p class="eyebrow">07 / Server API</p>
       <h2>Local server (optional)</h2>
       <p class="note">
         For scripts, <code>http://127.0.0.1:8765</code> - localhost only;
@@ -198,7 +250,7 @@
     </section>
 
     <section id="guides">
-      <p class="eyebrow">07 / Guides</p>
+      <p class="eyebrow">08 / Guides</p>
       <h2>Deep-reading docs</h2>
       <div class="grid">
         <a class="doc-link" href="guides/setup.md">

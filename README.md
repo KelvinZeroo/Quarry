@@ -48,8 +48,8 @@ Then load `extension/` into Chrome or Firefox - [docs/guides/setup.md](docs/guid
 | [docs/guides/usage.md](docs/guides/usage.md) | CLI flags, folders, browser button |
 | [docs/guides/sites.md](docs/guides/sites.md) | supported sites and limits |
 
-Website (open `docs/index.html` in a browser): Home, Install, Usage and
-Extension pages in `docs/`.
+Website (open `docs/index.html` in a browser): Home, Download and Usage
+pages in `docs/`.
 
 Settings live in `config.json` (`downloadDir`, `port`, `workers`, `delay`).
 

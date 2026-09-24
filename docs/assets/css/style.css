@@ -116,6 +116,7 @@ section[id] { scroll-margin-top: 64px; }
 }
 .nav-links a { color: var(--fg); text-decoration: none; font-size: 15px; font-weight: 400; }
 .nav-links a:hover { color: var(--accent); }
+.nav-links a.btn, .nav-links a.btn:hover { color: #fff; }
 .nav-links a[aria-current="page"] { color: var(--accent); }
 
 .nav-toggle {

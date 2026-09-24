@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Quarry - Download</title>
+  <meta name="description" content="Download Quarry: browser extension zip for Chrome or Firefox, or install the CLI. Everything runs locally.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="index.html">Quarry<b>.</b></a>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="download.html" aria-current="page">Download</a></li>
+        <li><a href="usage.html">Usage</a></li>
+        <li><a class="btn btn-small" href="download.html">Get started</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+    <section class="page-head">
+      <p class="eyebrow">Download</p>
+      <h1>Get Quarry</h1>
+      <p class="lead">
+        Browser extension or CLI. Both run locally, nothing leaves your
+        machine.
+      </p>
+      <div class="btn-row">
+        <a class="btn" href="assets/quarry-chrome.zip" download>Download for Chrome</a>
+        <a class="btn ghost" href="assets/quarry-firefox.zip" download>Download for Firefox</a>
+      </div>
+    </section>
+
+    <section id="extension">
+      <p class="eyebrow">01 / Browser extension</p>
+      <h2>The browser button</h2>
+      <p class="note">
+        Extract a zip above - you get a <code>quarry</code> folder. The
+        extension talks to a local server - start it first:
+      </p>
+      <div class="terminal tight" role="img" aria-label="Start server">
+        <div class="terminal-bar">
+          <span></span><span></span><span></span>
+          <em>PowerShell</em>
+        </div>
+        <code><span class="prompt">&gt;</span> .\start.ps1            # logs visible; Ctrl+C stops it</code>
+        <code><span class="prompt">&gt;</span> .\start.ps1 -NewWindow # runs in its own window</code>
+      </div>
+      <div class="callout">
+        <p>The green dot in the popup means everything is connected.
+           At every logon: <code>.\install.ps1 -Autostart</code></p>
+      </div>
+
+      <h3>Chrome / Edge</h3>
+      <ol class="steps">
+        <li>Open <code>chrome://extensions</code></li>
+        <li>Turn on <strong>Developer mode</strong> - the switch in the top
+            right corner</li>
+        <li>Click <strong>Load unpacked</strong></li>
+        <li>Select the extracted <code>quarry</code> folder - the Quarry card
+            appears</li>
+        <li>Pin it: puzzle icon in the toolbar -&gt; pin Quarry</li>
+      </ol>
+      <p class="note">Update later: extract the new zip, then press the refresh
+        arrow on the Quarry card.</p>
+
+      <h3>Firefox</h3>
+      <ol class="steps">
+        <li>Open <code>about:debugging#/runtime/this-firefox</code></li>
+        <li>Click <strong>Load Temporary Add-on...</strong></li>
+        <li>Select <code>quarry/manifest.json</code> inside the extracted
+            folder</li>
+        <li>The Quarry icon appears in the toolbar</li>
+      </ol>
+      <div class="callout">
+        <p>Firefox does not keep unsigned add-ons after a restart. Load it
+           again from <code>about:debugging</code>, or use a Developer/ESR
+           build with <code>xpinstall.signatures.required=false</code> for a
+           permanent install.</p>
+      </div>
+
+      <h3>Settings</h3>
+      <p class="note">Right-click the icon -&gt; <strong>Options</strong>
+        (or <em>Settings</em> in the popup):</p>
+      <ul class="dots">
+        <li><strong>Download folder</strong> - empty = server default</li>
+        <li><strong>Server port</strong> - must match <code>config.json</code></li>
+        <li><strong>Max files per download</strong> - <code>0</code> = everything</li>
+      </ul>
+    </section>
+
+    <section id="cli">
+      <p class="eyebrow">02 / Command line</p>
+      <h2>The one command</h2>
+      <ul class="feature-list">
+        <li>
+          <strong>Windows + PowerShell</strong>
+          <span>5.1 or later - it ships with Windows.</span>
+        </li>
+        <li>
+          <strong>Python 3.10+</strong>
+          <span>Tick <em>Add python.exe to PATH</em> when installing.</span>
+        </li>
+        <li>
+          <strong>Nothing else</strong>
+          <span>No accounts, no cloud, no telemetry.</span>
+        </li>
+      </ul>
+      <div class="terminal tight" role="img" aria-label="Install and run">
+        <div class="terminal-bar">
+          <span></span><span></span><span></span>
+          <em>PowerShell</em>
+        </div>
+        <code><span class="prompt">&gt;</span> .\install.ps1                # one-time setup</code>
+        <code><span class="prompt">&gt;</span> .\quarry.ps1 &lt;any-page-url&gt; # site detected automatically</code>
+      </div>
+      <ul class="dots">
+        <li><code>.\download.ps1</code> is kept as an alias.</li>
+        <li>Add <code>-DryRun</code> to resolve without downloading,
+            <code>-Open</code> to open the folder after.</li>
+        <li>All flags: <a href="usage.html">Usage</a></li>
+      </ul>
+    </section>
+
+    <section id="troubleshooting">
+      <p class="eyebrow">03 / Troubleshooting</p>
+      <h2>When something goes wrong</h2>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr><th>Symptom</th><th>Fix</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Python not found</code></td>
+              <td>Install Python 3.10+, enable <em>Add to PATH</em>, re-run
+                  <code>.\install.ps1</code>.</td>
+            </tr>
+            <tr>
+              <td>Red dot / "Server offline"</td>
+              <td>Server is not running -&gt; <code>.\start.ps1</code>. Also
+                  check the port in the extension settings.</td>
+            </tr>
+            <tr>
+              <td>HTTP 403 / "blocked"</td>
+              <td>The site wants a logged-in session. Open the page in your
+                  browser and use the extension button - it forwards your
+                  browser cookies.</td>
+            </tr>
+            <tr>
+              <td>"no media found"</td>
+              <td>Generic mode only sees what the page shows -
+                  see <a href="guides/sites.md">docs/guides/sites.md</a>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      <strong>Personal use only.</strong> You are responsible for what you
+      download and where you store it. Respect the terms of service and
+      copyright of every site you use.
+    </p>
+    <p class="dim">Quarry - runs locally, no telemetry, no accounts.</p>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+</body>
+</html>
