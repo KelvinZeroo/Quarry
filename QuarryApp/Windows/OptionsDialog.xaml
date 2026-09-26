@@ -1,0 +1,351 @@
+<Window x:Class="QuarryApp.Windows.OptionsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        ui:ThemeManager.IsThemeAware="True"
+        Title="Quarry Settings" Height="520" Width="640"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#F1F5F9"
+        FontFamily="Manrope, Segoe UI Variable Text, Segoe UI, sans-serif" FontSize="12">
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Main Settings 2-Column Grid -->
+        <Grid Grid.Row="0" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Navigation Menu -->
+            <Border Grid.Column="0" Background="#FFFFFF" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="6" Padding="6,8">
+                <ListBox x:Name="SettingsNavList" BorderThickness="0" Background="Transparent" SelectionChanged="SettingsNavList_SelectionChanged" SelectedIndex="0">
+                    <ListBox.Resources>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="10,8"/>
+                            <Setter Property="Margin" Value="0,2"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="FontWeight" Value="Medium"/>
+                            <Setter Property="Foreground" Value="#334155"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="itemBorder" Background="Transparent" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="itemBorder" Property="Background" Value="#F1F5F9"/>
+                                                <Setter Property="Foreground" Value="#0F172A"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="itemBorder" Property="Background" Value="#2563EB"/>
+                                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.Resources>
+
+                    <ListBoxItem Content="General"/>
+                    <ListBoxItem Content="Appearance"/>
+                    <ListBoxItem Content="Downloads"/>
+                    <ListBoxItem Content="Connection"/>
+                    <ListBoxItem Content="BitTorrent"/>
+                    <ListBoxItem Content="Scheduler"/>
+                    <ListBoxItem Content="Site Grabber"/>
+                </ListBox>
+            </Border>
+
+            <!-- Right Settings Content Area -->
+            <Border Grid.Column="2" Background="#FFFFFF" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="6" Padding="14">
+                <Grid>
+                    <!-- 0. General Panel -->
+                    <ScrollViewer x:Name="PanelGeneral" VerticalScrollBarVisibility="Auto" Visibility="Visible">
+                        <StackPanel>
+                            <TextBlock Text="General Settings" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,12"/>
+
+                            <GroupBox Header="System &amp; Clipboard" Padding="10" Margin="0,0,0,12" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <StackPanel>
+                                    <CheckBox x:Name="ClipboardCatchCheck" Content="Automatically catch URLs from clipboard" Margin="0,0,0,8" IsChecked="True" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <CheckBox x:Name="StartWithWindowsCheck" Content="Launch Quarry on Windows startup" Margin="0,0,0,8" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <CheckBox x:Name="AutoScanRootCheck" Content="Auto-scan galleries when downloading site root URLs" Margin="0,0,0,8" IsChecked="True" FontWeight="Regular" Foreground="#1E293B"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="Browser Extension Integration" Padding="10" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="Local API Port:" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <TextBox x:Name="PortTextBox" Grid.Column="2" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="8765" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                                    <TextBlock Grid.Column="3" Text=" (Default 8765)" VerticalAlignment="Center" Foreground="#64748B" FontSize="11" Margin="6,0,0,0"/>
+                                </Grid>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- 1. Appearance Panel -->
+                    <ScrollViewer x:Name="PanelAppearance" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="Typography &amp; UI Font" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,12"/>
+
+                            <GroupBox Header="Font Selection" Padding="10" Margin="0,0,0,12" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <StackPanel>
+                                    <TextBlock Text="Font Family (applied across all menus and tables):" Margin="0,0,0,6" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <ComboBox x:Name="FontFamilyComboBox" Height="28" IsEditable="True" Margin="0,0,0,10" SelectionChanged="FontFamilyComboBox_SelectionChanged"/>
+
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="10"/>
+                                            <ColumnDefinition Width="80"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Base Font Size:" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                        <ComboBox x:Name="FontSizeComboBox" Grid.Column="2" Height="28" SelectionChanged="FontSizeComboBox_SelectionChanged">
+                                            <ComboBoxItem Content="10.5"/>
+                                            <ComboBoxItem Content="11"/>
+                                            <ComboBoxItem Content="11.5"/>
+                                            <ComboBoxItem Content="12" IsSelected="True"/>
+                                            <ComboBoxItem Content="13"/>
+                                            <ComboBoxItem Content="14"/>
+                                            <ComboBoxItem Content="15"/>
+                                            <ComboBoxItem Content="16"/>
+                                        </ComboBox>
+                                    </Grid>
+
+                                    <Button Content="Reset to Default (Manrope 12px)" Width="190" Height="26" HorizontalAlignment="Left" Click="ResetFontDefault_Click" Margin="0,0,0,10"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="Live Font Preview" Padding="10" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <Border Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="4" Padding="10">
+                                    <StackPanel>
+                                        <TextBlock x:Name="PreviewHeading" Text="Quarry Download Manager — 100% Complete" FontWeight="SemiBold" FontSize="13" Foreground="#1E293B" Margin="0,0,0,4"/>
+                                        <TextBlock x:Name="PreviewBody" Text="The quick brown fox jumps over the lazy dog. 0123456789 (12.4 MB/s)" FontSize="12" Foreground="#475569"/>
+                                    </StackPanel>
+                                </Border>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- 2. Downloads Panel -->
+                    <ScrollViewer x:Name="PanelDownloads" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="Download &amp; Save Locations" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,12"/>
+
+                            <GroupBox Header="Default Save Location" Padding="10" Margin="0,0,0,12" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <StackPanel>
+                                    <TextBlock Text="Download folder:" Margin="0,0,0,6" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="6"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="OutDirTextBox" Grid.Column="0" Height="26" VerticalContentAlignment="Center" Padding="6,0" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                                        <Button Grid.Column="2" Content="Browse..." Width="75" Height="26" Click="BrowseFolder_Click" Background="#F1F5F9" BorderBrush="#CBD5E1" FontWeight="Medium"/>
+                                    </Grid>
+                                    <CheckBox Content="Create individual subfolder for each gallery/album" IsChecked="True" IsEnabled="False" FontWeight="Regular" Foreground="#1E293B" Margin="0,0,0,6"/>
+                                    <CheckBox x:Name="AutoExtractCheck" Content="Automatically unpack downloaded archives (.zip, .rar, .7z)" IsChecked="True" FontWeight="Regular" Foreground="#1E293B"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="File Deduplication" Padding="10" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <TextBlock Text="Automatic SHA-256 duplicate detection and manifest indexing are enabled by default." TextWrapping="Wrap" Foreground="#64748B" FontWeight="Regular" FontSize="11.5"/>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- 3. Connection Panel -->
+                    <ScrollViewer x:Name="PanelConnection" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="Bandwidth &amp; Multi-Threading" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,12"/>
+
+                            <GroupBox Header="Connection Limits" Padding="10" Margin="0,0,0,12" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="8"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="8"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Max concurrent workers:" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <TextBox x:Name="WorkersTextBox" Grid.Row="0" Grid.Column="1" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="6" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text=" (1 - 32 parallel threads)" VerticalAlignment="Center" Foreground="#64748B" FontSize="11" Margin="6,0,0,0"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Connection timeout (sec):" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <TextBox x:Name="TimeoutTextBox" Grid.Row="2" Grid.Column="1" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="30" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Max retry attempts:" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <TextBox x:Name="RetriesTextBox" Grid.Row="4" Grid.Column="1" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="3" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                                </Grid>
+                            </GroupBox>
+
+                            <GroupBox Header="Rate &amp; Speed Limiting" Padding="10" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="160"/>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Delay between requests (s):" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                        <TextBox x:Name="DelayTextBox" Grid.Column="1" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="0.05" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                                    </Grid>
+
+                                    <CheckBox x:Name="EnableSpeedLimitCheck" Content="Enable global download speed limit" Margin="0,0,0,8" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <Grid Margin="20,0,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Max speed limit (KB/s):" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                        <TextBox x:Name="SpeedLimitTextBox" Grid.Column="1" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="0" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                                        <TextBlock Grid.Column="2" Text=" (0 = unlimited)" VerticalAlignment="Center" Foreground="#64748B" FontSize="11" Margin="6,0,0,0"/>
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- 4. BitTorrent Panel -->
+                    <ScrollViewer x:Name="PanelBitTorrent" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="BitTorrent &amp; P2P Settings" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,12"/>
+
+                            <GroupBox Header="P2P Protocol &amp; Port Settings" Padding="10" Margin="0,0,0,12" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Incoming listening port:" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                        <TextBox x:Name="TorrentPortTextBox" Grid.Column="1" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="6881" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                                        <TextBlock Grid.Column="2" Text=" (Default 6881)" VerticalAlignment="Center" Foreground="#64748B" FontSize="11" Margin="6,0,0,0"/>
+                                    </Grid>
+
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Max peers per torrent:" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                        <TextBox x:Name="MaxPeersTextBox" Grid.Column="1" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="50" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                                    </Grid>
+
+                                    <CheckBox x:Name="UPnPCheck" Content="Enable UPnP automatic router port forwarding" Margin="0,0,0,6" IsChecked="True" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <CheckBox x:Name="DHTCheck" Content="Enable DHT (Distributed Hash Table)" Margin="0,0,0,6" IsChecked="True" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <CheckBox x:Name="PeXCheck" Content="Enable PeX (Peer Exchange between swarms)" Margin="0,0,0,4" IsChecked="True" FontWeight="Regular" Foreground="#1E293B"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="Windows Protocol &amp; File Association" Padding="10" Margin="0,0,0,12" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <StackPanel>
+                                    <CheckBox x:Name="AssociateMagnetCheck" Content="Register as default handler for magnet: links" Margin="0,0,0,6" IsChecked="True" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <CheckBox x:Name="AssociateTorrentCheck" Content="Register as default handler for .torrent files" Margin="0,0,0,10" IsChecked="True" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <Button Content="Apply Windows Associations Now" Width="240" Height="26" HorizontalAlignment="Left" Click="ApplyAssociations_Click" Background="#F1F5F9" BorderBrush="#CBD5E1" FontWeight="Medium" Foreground="#1E293B"/>
+                                </StackPanel>
+                            </GroupBox>
+
+                            <GroupBox Header="Default Public Trackers" Padding="10" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <TextBox x:Name="TrackersTextBox" Height="80" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="NoWrap" FontFamily="Consolas" FontSize="11" Padding="4" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- 5. Scheduler Panel -->
+                    <ScrollViewer x:Name="PanelScheduler" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="Automated Time-Window Scheduler" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,12"/>
+
+                            <GroupBox Header="Automated Queue Execution" Padding="10" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <StackPanel>
+                                    <CheckBox x:Name="SchedulerEnabledCheck" Content="Enable automated time-window queue execution" Margin="0,0,0,12" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <Grid Margin="20,0,0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="8"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="70"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Start download queue at:" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                        <TextBox x:Name="StartTimeTextBox" Grid.Row="0" Grid.Column="1" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="01:00" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text=" (24h format, e.g. 01:00)" VerticalAlignment="Center" Foreground="#64748B" FontSize="11" Margin="6,0,0,0"/>
+
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Stop download queue at:" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                        <TextBox x:Name="StopTimeTextBox" Grid.Row="2" Grid.Column="1" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="07:00" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="2" Text=" (24h format, e.g. 07:00)" VerticalAlignment="Center" Foreground="#64748B" FontSize="11" Margin="6,0,0,0"/>
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- 6. Site Grabber Panel -->
+                    <ScrollViewer x:Name="PanelSiteGrabber" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="Site Grabber &amp; Deep Scanner" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,12"/>
+
+                            <GroupBox Header="Deep Crawler &amp; Sitemap Limits" Padding="10" Margin="0,0,0,12" BorderBrush="#E2E8F0" FontWeight="SemiBold" Foreground="#334155">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="8"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="170"/>
+                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Max discovery items cap:" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <TextBox x:Name="MaxScanTextBox" Grid.Row="0" Grid.Column="1" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="2000" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Ask confirmation if above:" VerticalAlignment="Center" FontWeight="Regular" Foreground="#1E293B"/>
+                                    <TextBox x:Name="AskAboveTextBox" Grid.Row="2" Grid.Column="1" Height="26" VerticalContentAlignment="Center" Padding="4,0" Text="500" BorderBrush="#CBD5E1" Background="#FFFFFF"/>
+                                </Grid>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- OK / Cancel Action Buttons -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="OK" Width="80" Height="28" IsDefault="True" Click="Ok_Click" Background="#2563EB" Foreground="#FFFFFF" FontWeight="SemiBold" BorderThickness="0" Margin="0,0,8,0"/>
+            <Button Content="Cancel" Width="80" Height="28" IsCancel="True" Click="Cancel_Click" Background="#E2E8F0" BorderBrush="#CBD5E1" FontWeight="Medium" Foreground="#334155"/>
+        </StackPanel>
+    </Grid>
+</Window>

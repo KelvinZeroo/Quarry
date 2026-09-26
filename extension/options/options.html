@@ -2,46 +2,153 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Quarry - Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quarry Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="options.css">
 </head>
 <body>
-  <main>
-    <h1>Quarry <span>Settings</span></h1>
-    <p class="lead">Everything here is stored in your browser only.</p>
+  <div class="settings-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <h1 class="brand-name">Quarry Settings</h1>
+      </div>
+      <div id="statusBadge" class="status-badge online">
+        <span class="status-dot"></span>
+        <span id="statusText">Checking...</span>
+      </div>
+    </header>
 
-    <form id="form">
-      <label for="destDir">
-        Download folder
-        <input type="text" id="destDir" placeholder="Leave empty to use the default folder" spellcheck="false">
-        <small id="destHint">Default: ...</small>
-      </label>
+    <form id="settingsForm" class="settings-form">
+      <!-- Section: Download Folder -->
+      <section class="card">
+        <h2 class="card-title">Accounts download folder</h2>
+        <p class="card-desc">Account folders will be created inside this folder.</p>
+        
+        <div class="field-group">
+          <label for="destDir">Directory Path</label>
+          <input type="text" id="destDir" placeholder="Leave blank to use server default" spellcheck="false">
+          <span id="destHint" class="field-hint">Default: Loaded from server</span>
+        </div>
+      </section>
 
-      <label for="port">
-        Server port
-        <input type="number" id="port" min="1" max="65535" placeholder="8765">
-        <small>Must match "port" in config.json (default 8765).</small>
-      </label>
+      <!-- Section: Instagram In-Page Options -->
+      <section class="card">
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <h2 class="card-title">Always show download icon in carousel</h2>
+            <p class="card-desc">If this is turned off, the download icon over posts with multiple images and videos will only appear when hovering your cursor.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="alwaysShowCarousel" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </section>
 
-      <label for="maxImages">
-        Max files per download
-        <input type="number" id="maxImages" min="0" placeholder="0 = no limit">
-        <small>0 downloads everything the page offers.</small>
-      </label>
+      <!-- Section: Theme & Appearance -->
+      <section class="card">
+        <h2 class="card-title">Theme & Appearance</h2>
+        <p class="card-desc">Choose your preferred visual theme.</p>
+        
+        <div class="field-group">
+          <label for="themeSelect">Color Theme</label>
+          <select id="themeSelect">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="system">System Default</option>
+          </select>
+        </div>
+      </section>
 
-      <div class="row">
-        <button type="submit" class="primary">Save</button>
-        <button type="button" id="resetBtn" class="ghost">Use defaults</button>
-        <span id="status" class="status"></span>
+      <!-- Section: Server & Connection -->
+      <section class="card">
+        <h2 class="card-title">Server Connection</h2>
+        <p class="card-desc">Port and batch parameters for the local Quarry server.</p>
+
+        <div class="grid-2">
+          <div class="field-group">
+            <label for="port">Port</label>
+            <input type="number" id="port" min="1" max="65535" placeholder="8765">
+            <span class="field-hint">Default: 8765</span>
+          </div>
+
+          <div class="field-group">
+            <label for="maxImages">Max Files per Download</label>
+            <input type="number" id="maxImages" min="0" placeholder="0 = Unlimited">
+            <span class="field-hint">0 = No limit</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Site Scanning -->
+      <section class="card">
+        <h2 class="card-title">Site Scanning</h2>
+        <p class="card-desc">Scan the whole site (sitemaps + links) before downloading, then ask how many files to take. Site roots scan automatically; deep links stay single-page unless force-scanned.</p>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Scan whole site first (site roots)</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="autoScan" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Also force-scan deep links (--scan)</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="scanForce">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-label">Ask "how many?" before downloading</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="askHowMany" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="field-group">
+          <label for="maxScan">Scan limit (files to discover)</label>
+          <div class="chip-row" id="scanChips">
+            <button type="button" class="chip-opt" data-cap="100">100</button>
+            <button type="button" class="chip-opt" data-cap="500">500</button>
+            <button type="button" class="chip-opt" data-cap="1000">1,000</button>
+            <button type="button" class="chip-opt" data-cap="2000">2,000</button>
+            <button type="button" class="chip-opt" data-cap="10000">10,000</button>
+            <button type="button" class="chip-opt" data-cap="0">Unlimited</button>
+          </div>
+          <input type="number" id="maxScan" min="0" placeholder="2000 (0 = no cap)">
+          <span class="field-hint">The scan stops once it has discovered this many files. 0 = no cap.</span>
+        </div>
+
+        <div class="field-group">
+          <label for="askAbove">Confirm "download ALL" above</label>
+          <input type="number" id="askAbove" min="0" placeholder="500 (0 = never ask)">
+          <span class="field-hint">When a scan finds more files than this, confirm before downloading all.</span>
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">Save Settings</button>
+        <button type="button" id="resetBtn" class="btn-secondary">Restore Defaults</button>
+        <span id="saveStatus" class="save-status"></span>
       </div>
     </form>
-
-    <section class="help">
-      <h2>Server status</h2>
-      <p id="health" class="health">Checking...</p>
-      <button type="button" id="retryBtn" class="ghost small">Re-check</button>
-    </section>
-  </main>
+  </div>
 
   <script src="options.js"></script>
 </body>

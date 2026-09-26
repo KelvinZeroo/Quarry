@@ -1,0 +1,551 @@
+<Window x:Class="QuarryApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+        xmlns:models="clr-namespace:QuarryApp.Models"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        ui:TitleBar.IsIconVisible="True"
+        ui:ThemeManager.IsThemeAware="True"
+        Title="Quarry Download Manager" Height="720" Width="1200"
+        MinHeight="480" MinWidth="850"
+        FontFamily="Manrope, Segoe UI Variable Text, Segoe UI, sans-serif" FontSize="12">
+
+    <Window.Resources>
+        <!-- Classic Squarish Button Style -->
+        <!-- Modern Button Style -->
+        <Style x:Key="ClassicSquarishButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#F8FAFC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="Foreground" Value="#1E293B"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="btnBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="btnBorder" Property="Background" Value="#F1F5F9"/>
+                                <Setter TargetName="btnBorder" Property="BorderBrush" Value="#94A3B8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="btnBorder" Property="Background" Value="#E2E8F0"/>
+                                <Setter TargetName="btnBorder" Property="BorderBrush" Value="#64748B"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Sidebar TreeView Item Style -->
+        <Style x:Key="SidebarTreeViewItemStyle" TargetType="TreeViewItem">
+            <Setter Property="Padding" Value="1,1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="FontFamily" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=FontFamily}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TreeViewItem">
+                        <Grid Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" MinWidth="18"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <ToggleButton x:Name="Expander"
+                                          Style="{x:Null}"
+                                          IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                          ClickMode="Press"
+                                          Margin="0,0,3,0"
+                                          VerticalAlignment="Center">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Width="16" Height="16" Background="Transparent">
+                                            <Path x:Name="ExpandPath"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                  Fill="#64748B"
+                                                  Data="M 0 0 L 4 4 L 0 8 Z"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="ExpandPath" Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <RotateTransform Angle="90" CenterX="2" CenterY="4"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter TargetName="ExpandPath" Property="Fill" Value="#334155"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+
+                            <Border x:Name="SelectionBorder"
+                                    Grid.Column="1"
+                                    Background="Transparent"
+                                    CornerRadius="4"
+                                    MinHeight="28"
+                                    Padding="8,4"
+                                    Margin="0,0">
+                                <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                            </Border>
+
+                            <ItemsPresenter x:Name="ItemsHost"
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Margin="6,2,0,2"
+                                            Visibility="Collapsed"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Setter TargetName="ItemsHost" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="HasItems" Value="False">
+                                <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True" SourceName="SelectionBorder">
+                                <Setter TargetName="SelectionBorder" Property="Background" Value="#F1F5F9"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="SelectionBorder" Property="Background" Value="#2563EB"/>
+                                <Setter TargetName="SelectionBorder" Property="TextElement.Foreground" Value="#FFFFFF"/>
+                                <Setter TargetName="SelectionBorder" Property="TextElement.FontWeight" Value="SemiBold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DataGrid Header ContextMenu Resource -->
+        <ContextMenu x:Key="ColumnHeaderContextMenu" Opened="HeaderContextMenu_Opened">
+            <MenuItem Header="Customize Columns..." FontWeight="SemiBold" Click="CustomizeColumns_Click"/>
+            <Separator/>
+            <MenuItem Header="File Name" IsCheckable="True" IsChecked="True" Click="HeaderColumnToggle_Click" Tag="ColFileName"/>
+            <MenuItem Header="Size" IsCheckable="True" IsChecked="True" Click="HeaderColumnToggle_Click" Tag="ColSize"/>
+            <MenuItem Header="Status" IsCheckable="True" IsChecked="True" Click="HeaderColumnToggle_Click" Tag="ColStatus"/>
+            <MenuItem Header="Progress" IsCheckable="True" IsChecked="True" Click="HeaderColumnToggle_Click" Tag="ColProgress"/>
+            <MenuItem Header="Transfer Rate" IsCheckable="True" IsChecked="True" Click="HeaderColumnToggle_Click" Tag="ColTransferRate"/>
+            <MenuItem Header="Time Left" IsCheckable="True" IsChecked="True" Click="HeaderColumnToggle_Click" Tag="ColTimeLeft"/>
+            <MenuItem Header="Last Try Date" IsCheckable="True" IsChecked="True" Click="HeaderColumnToggle_Click" Tag="ColLastTryDate"/>
+            <MenuItem Header="Description / URL" IsCheckable="True" IsChecked="True" Click="HeaderColumnToggle_Click" Tag="ColUrl"/>
+            <MenuItem Header="Save Path / Folder" IsCheckable="True" IsChecked="False" Click="HeaderColumnToggle_Click" Tag="ColFolder"/>
+            <MenuItem Header="Category" IsCheckable="True" IsChecked="False" Click="HeaderColumnToggle_Click" Tag="ColCategory"/>
+            <MenuItem Header="Quality / Stream" IsCheckable="True" IsChecked="False" Click="HeaderColumnToggle_Click" Tag="ColQuality"/>
+            <Separator/>
+            <MenuItem Header="Reset to Default" Click="ResetColumnsMenu_Click"/>
+        </ContextMenu>
+
+        <!-- DataGrid Header Style with Right-Click Column Customization -->
+        <Style x:Key="ClassicDataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F8FAFC"/>
+            <Setter Property="Foreground" Value="#334155"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="SeparatorBrush" Value="#E2E8F0"/>
+            <Setter Property="SeparatorVisibility" Value="Visible"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="FontFamily" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=FontFamily}"/>
+            <Setter Property="ContextMenu" Value="{StaticResource ColumnHeaderContextMenu}"/>
+        </Style>
+
+        <!-- DataGrid Row Style -->
+        <Style x:Key="ClassicDataGridRowStyle" TargetType="DataGridRow">
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=FontFamily}"/>
+            <EventSetter Event="PreviewMouseRightButtonDown" Handler="DataGridRow_PreviewMouseRightButtonDown"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#EFF6FF"/>
+                    <Setter Property="Foreground" Value="#1D4ED8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- DataGrid Cell Style -->
+        <Style x:Key="ClassicDataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="8,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#EFF6FF"/>
+                    <Setter Property="Foreground" Value="#1D4ED8"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- 1. Menu Bar -->
+            <RowDefinition Height="Auto"/> <!-- 2. Toolbar & Search -->
+            <RowDefinition Height="*"/>    <!-- 3. Main Split View -->
+            <RowDefinition Height="24"/>   <!-- 4. Status Bar -->
+        </Grid.RowDefinitions>
+
+        <!-- 1. Top Menu Bar (Tasks, File, Downloads, View, Options, Help) -->
+        <Menu Grid.Row="0" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Padding="4,2">
+            <MenuItem Header="_Tasks">
+                <MenuItem Header="_Add new download..." InputGestureText="Ctrl+N" Click="AddUrl_Click"/>
+                <MenuItem Header="_Run Site Grabber..." Click="Grabber_Click"/>
+                <Separator/>
+                <MenuItem Header="_Start Queue" Click="StartQueue_Click"/>
+                <MenuItem Header="_Stop Queue" Click="StopQueue_Click"/>
+                <Separator/>
+                <MenuItem Header="_Stop All Downloads" Click="StopAll_Click"/>
+                <MenuItem Header="_Delete Completed" Click="DeleteCompleted_Click"/>
+                <Separator/>
+                <MenuItem Header="E_xit" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open Downloads Folder" Click="OpenDownloadsFolder_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Downloads">
+                <MenuItem Header="_Resume Selected" Click="ResumeSelected_Click"/>
+                <MenuItem Header="_Stop Selected" Click="StopSelected_Click"/>
+                <MenuItem Header="_Redownload" Click="RedownloadSelected_Click"/>
+                <Separator/>
+                <MenuItem Header="_Delete Selected" InputGestureText="Del" Click="DeleteSelected_Click"/>
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem x:Name="ViewSidebarMenu" Header="_Categories Sidebar" IsCheckable="True" IsChecked="True" Click="ToggleSidebar_Click"/>
+                <MenuItem x:Name="ViewToolbarMenu" Header="_Toolbar" IsCheckable="True" IsChecked="True" Click="ToggleToolbar_Click"/>
+                <MenuItem x:Name="ViewStatusBarMenu" Header="_Status Bar" IsCheckable="True" IsChecked="True" Click="ToggleStatusBar_Click"/>
+                <Separator/>
+                <MenuItem Header="_Customize Columns Layout..." Click="CustomizeColumns_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Options" Click="Options_Click"/>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About Quarry..." Click="About_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- 2. Action Toolbar with Search Filter -->
+        <Border x:Name="ToolbarBorder" Grid.Row="1" Background="#FFFFFF" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Padding="8,6">
+            <DockPanel LastChildFill="True">
+                <!-- Right-aligned Quick Search Filter -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="6,0,0,0">
+                    <TextBlock Text="Search:" VerticalAlignment="Center" Foreground="#64748B" FontSize="11.5" Margin="0,0,6,0"/>
+                    <TextBox x:Name="SearchFilterTextBox" Width="160" Height="28" Padding="8,0" VerticalContentAlignment="Center" Background="#F8FAFC" BorderBrush="#CBD5E1" FontSize="11.5" TextChanged="SearchFilterTextBox_TextChanged"/>
+                </StackPanel>
+
+                <!-- Action Buttons in Logical Functional Groups -->
+                <StackPanel Orientation="Horizontal">
+                    <!-- Group 1: Transfers -->
+                    <Button Style="{StaticResource ClassicSquarishButtonStyle}" Content="＋ Add URL" Click="AddUrl_Click" ToolTip="Add new download URL (Ctrl+N / Ctrl+V)" FontWeight="SemiBold" Background="#EFF6FF" BorderBrush="#BFDBFE" Foreground="#1D4ED8"/>
+                    <Button x:Name="ResumeButton" Style="{StaticResource ClassicSquarishButtonStyle}" Content="▶ Resume" Click="ResumeSelected_Click" ToolTip="Resume selected download"/>
+                    <Button x:Name="StopButton" Style="{StaticResource ClassicSquarishButtonStyle}" Content="⏸ Stop" Click="StopSelected_Click" ToolTip="Stop selected download"/>
+                    <Button Style="{StaticResource ClassicSquarishButtonStyle}" Content="⏹ Stop All" Click="StopAll_Click" ToolTip="Stop all downloads"/>
+
+                    <Rectangle Width="1" Fill="#E2E8F0" Margin="6,2"/>
+
+                    <!-- Group 2: Management -->
+                    <Button Style="{StaticResource ClassicSquarishButtonStyle}" Content="🗑 Delete" Click="DeleteSelected_Click" ToolTip="Delete selected download"/>
+                    <Button Style="{StaticResource ClassicSquarishButtonStyle}" Content="🧹 Clear Done" Click="DeleteCompleted_Click" ToolTip="Delete finished downloads from list"/>
+
+                    <Rectangle Width="1" Fill="#E2E8F0" Margin="6,2"/>
+
+                    <!-- Group 3: Queue & Scheduler -->
+                    <Button x:Name="StartQueueBtn" Style="{StaticResource ClassicSquarishButtonStyle}" Content="⚡ Start Queue" Click="StartQueue_Click" ToolTip="Start processing queued downloads"/>
+                    <Button x:Name="StopQueueBtn" Style="{StaticResource ClassicSquarishButtonStyle}" Content="⏹ Stop Queue" Click="StopQueue_Click" ToolTip="Stop queue automation"/>
+
+                    <Rectangle Width="1" Fill="#E2E8F0" Margin="6,2"/>
+
+                    <!-- Group 4: Tools -->
+                    <Button Style="{StaticResource ClassicSquarishButtonStyle}" Content="⚙ Options" Click="Options_Click" ToolTip="Open Settings / Options"/>
+                    <Button Style="{StaticResource ClassicSquarishButtonStyle}" Content="🌐 Site Grabber" Click="Grabber_Click" ToolTip="Run website media crawler"/>
+                    <Button Style="{StaticResource ClassicSquarishButtonStyle}" Content="📁 Folder" Click="OpenDownloadsFolder_Click" ToolTip="Open Downloads folder in Explorer"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- 3. Main Split View (Compact Categories Sidebar + DataGrid) -->
+        <Grid Grid.Row="2" Background="#F8FAFC">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="SidebarColDef" Width="200" MinWidth="150" MaxWidth="320"/>
+                <ColumnDefinition Width="1"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Compact Categories Sidebar -->
+            <Border x:Name="SidebarBorder" Grid.Column="0" Background="#F8FAFC">
+                <DockPanel>
+                    <!-- Sidebar Header with Close Button -->
+                    <Border DockPanel.Dock="Top" Background="#F1F5F9" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Height="30" Padding="12,2">
+                        <Grid>
+                            <TextBlock Text="CATEGORIES" FontWeight="SemiBold" FontSize="11" Foreground="#64748B" VerticalAlignment="Center"/>
+                            <Button HorizontalAlignment="Right" Content="✕" Width="18" Height="18" FontSize="10" Background="Transparent" BorderThickness="0" Cursor="Hand" Foreground="#94A3B8" Click="CloseSidebar_Click" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Clean Categories & Status Sidebar -->
+                    <TreeView x:Name="CategoryTreeView"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              Padding="6,8"
+                              SelectedItemChanged="CategoryTreeView_SelectedItemChanged"
+                              ItemContainerStyle="{StaticResource SidebarTreeViewItemStyle}">
+                        <TreeView.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#2563EB"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#FFFFFF"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#3B82F6"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#FFFFFF"/>
+                        </TreeView.Resources>
+
+                        <!-- 1. All Downloads (Categories) -->
+                        <TreeViewItem IsExpanded="True" IsSelected="True" Tag="all">
+                            <TreeViewItem.Header>
+                                <DockPanel LastChildFill="True">
+                                    <Border DockPanel.Dock="Right" Background="#E2E8F0" CornerRadius="10" Padding="6,1" Margin="6,0,2,0">
+                                        <TextBlock x:Name="BadgeAllCount" Text="0" FontSize="11" Foreground="#334155" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="📁 All Downloads" FontWeight="Medium" FontSize="12.5" VerticalAlignment="Center"/>
+                                </DockPanel>
+                            </TreeViewItem.Header>
+                            <!-- Sub-categories -->
+                            <TreeViewItem Tag="compressed">
+                                <TreeViewItem.Header>
+                                    <TextBlock Text="📦 Compressed" FontSize="12" VerticalAlignment="Center"/>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem Tag="documents">
+                                <TreeViewItem.Header>
+                                    <TextBlock Text="📄 Documents" FontSize="12" VerticalAlignment="Center"/>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem Tag="music">
+                                <TreeViewItem.Header>
+                                    <TextBlock Text="🎵 Music" FontSize="12" VerticalAlignment="Center"/>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem Tag="programs">
+                                <TreeViewItem.Header>
+                                    <TextBlock Text="💻 Programs" FontSize="12" VerticalAlignment="Center"/>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem Tag="videos">
+                                <TreeViewItem.Header>
+                                    <TextBlock Text="🎬 Video" FontSize="12" VerticalAlignment="Center"/>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                            <TreeViewItem Tag="images">
+                                <TreeViewItem.Header>
+                                    <TextBlock Text="🖼️ Images" FontSize="12" VerticalAlignment="Center"/>
+                                </TreeViewItem.Header>
+                            </TreeViewItem>
+                        </TreeViewItem>
+
+                        <!-- 2. Status Filters -->
+                        <TreeViewItem Tag="unfinished">
+                            <TreeViewItem.Header>
+                                <DockPanel LastChildFill="True">
+                                    <Border DockPanel.Dock="Right" Background="#E2E8F0" CornerRadius="10" Padding="6,1" Margin="6,0,2,0">
+                                        <TextBlock x:Name="BadgeProgressCount" Text="0" FontSize="11" Foreground="#334155" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="⏳ In Progress" FontWeight="Medium" FontSize="12.5" VerticalAlignment="Center"/>
+                                </DockPanel>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+
+                        <TreeViewItem Tag="finished">
+                            <TreeViewItem.Header>
+                                <DockPanel LastChildFill="True">
+                                    <Border DockPanel.Dock="Right" Background="#E2E8F0" CornerRadius="10" Padding="6,1" Margin="6,0,2,0">
+                                        <TextBlock x:Name="BadgeFinishedCount" Text="0" FontSize="11" Foreground="#334155" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="✅ Finished" FontWeight="Medium" FontSize="12.5" VerticalAlignment="Center"/>
+                                </DockPanel>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+
+                        <TreeViewItem Tag="stopped">
+                            <TreeViewItem.Header>
+                                <DockPanel LastChildFill="True">
+                                    <Border DockPanel.Dock="Right" Background="#E2E8F0" CornerRadius="10" Padding="6,1" Margin="6,0,2,0">
+                                        <TextBlock x:Name="BadgeStoppedCount" Text="0" FontSize="11" Foreground="#334155" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="⏸️ Stopped / Paused" FontWeight="Medium" FontSize="12.5" VerticalAlignment="Center"/>
+                                </DockPanel>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+
+                        <TreeViewItem Tag="failed">
+                            <TreeViewItem.Header>
+                                <DockPanel LastChildFill="True">
+                                    <Border DockPanel.Dock="Right" Background="#E2E8F0" CornerRadius="10" Padding="6,1" Margin="6,0,2,0">
+                                        <TextBlock x:Name="BadgeFailedCount" Text="0" FontSize="11" Foreground="#334155" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="❌ Failed" FontWeight="Medium" FontSize="12.5" VerticalAlignment="Center"/>
+                                </DockPanel>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+
+                        <!-- 3. Queue -->
+                        <TreeViewItem Tag="main_queue">
+                            <TreeViewItem.Header>
+                                <TextBlock Text="📋 Download Queue" FontWeight="Medium" FontSize="12.5" VerticalAlignment="Center"/>
+                            </TreeViewItem.Header>
+                        </TreeViewItem>
+                    </TreeView>
+                </DockPanel>
+            </Border>
+
+            <!-- Crisp 1px Splitter Divider -->
+            <GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Center" Background="#E2E8F0" Cursor="SizeWE"/>
+
+            <!-- Clean Win32 DataGrid Table with Multi-Selection & Shortcuts -->
+            <DataGrid x:Name="JobsDataGrid" Grid.Column="2"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserReorderColumns="True"
+                      CanUserResizeRows="False"
+                      GridLinesVisibility="All"
+                      HorizontalGridLinesBrush="#F1F5F9"
+                      VerticalGridLinesBrush="#F1F5F9"
+                      Background="#FFFFFF"
+                      RowBackground="#FFFFFF"
+                      AlternatingRowBackground="#F8FAFC"
+                      BorderThickness="0"
+                      SelectionMode="Extended"
+                      SelectionUnit="FullRow"
+                      ColumnHeaderStyle="{StaticResource ClassicDataGridHeaderStyle}"
+                      RowStyle="{StaticResource ClassicDataGridRowStyle}"
+                      CellStyle="{StaticResource ClassicDataGridCellStyle}"
+                      MouseDoubleClick="JobsDataGrid_MouseDoubleClick"
+                      KeyDown="JobsDataGrid_KeyDown">
+
+                <!-- Row Right-Click Context Menu -->
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Open / Play File" FontWeight="SemiBold" Click="OpenFileContext_Click"/>
+                        <MenuItem Header="Open Containing Folder" Click="OpenFolderContext_Click"/>
+                        <Separator/>
+                        <MenuItem Header="Resume" Click="ResumeSelected_Click"/>
+                        <MenuItem Header="Stop" Click="StopSelected_Click"/>
+                        <MenuItem Header="Redownload" Click="RedownloadSelected_Click"/>
+                        <Separator/>
+                        <MenuItem Header="Move File To..." Click="MoveFileContext_Click"/>
+                        <MenuItem Header="Rename..." Click="RenameFileContext_Click"/>
+                        <MenuItem Header="Delete from List" Click="DeleteSelected_Click"/>
+                        <MenuItem Header="Delete File from Disk" Click="DeleteFileDiskContext_Click"/>
+                        <Separator/>
+                        <MenuItem Header="Move Up in Queue" InputGestureText="Alt+Up" Click="MoveJobUp_Click"/>
+                        <MenuItem Header="Move Down in Queue" InputGestureText="Alt+Down" Click="MoveJobDown_Click"/>
+                        <MenuItem Header="Move to Top" Click="MoveJobTop_Click"/>
+                        <MenuItem Header="Move to Bottom" Click="MoveJobBottom_Click"/>
+                        <Separator/>
+                        <MenuItem Header="Copy File to Clipboard" Click="CopyFileToClipboardContext_Click"/>
+                        <MenuItem Header="Copy Source URL" Click="CopyUrlContext_Click"/>
+                        <MenuItem Header="Copy File Path" Click="CopyPathContext_Click"/>
+                        <Separator/>
+                        <MenuItem Header="Properties..." Click="PropertiesContext_Click"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+
+                <DataGrid.Columns>
+                    <!-- File Name -->
+                    <DataGridTextColumn x:Name="ColFileName" Header="File Name" Binding="{Binding Title}" Width="280" IsReadOnly="True"/>
+
+                    <!-- Size -->
+                    <DataGridTextColumn x:Name="ColSize" Header="Size" Binding="{Binding SizeDisplay}" Width="85" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+
+                    <!-- Status -->
+                    <DataGridTextColumn x:Name="ColStatus" Header="Status" Binding="{Binding StatusDisplay}" Width="90" IsReadOnly="True"/>
+
+                    <!-- Progress Column -->
+                    <DataGridTemplateColumn x:Name="ColProgress" Header="Progress" Width="105" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type models:DownloadJob}">
+                                <Grid Margin="4,2" VerticalAlignment="Center">
+                                    <ProgressBar Value="{Binding ProgressPercentage, Mode=OneWay}" Minimum="0" Maximum="100" Height="9" Background="#EEF2F6" Foreground="#2563EB" BorderThickness="0">
+                                        <ProgressBar.Style>
+                                            <Style TargetType="ProgressBar">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding State}" Value="Running">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ProgressBar.Style>
+                                    </ProgressBar>
+                                    <TextBlock Text="{Binding ProgressDisplay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10" Foreground="#475569" FontWeight="Medium"/>
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Transfer Rate -->
+                    <DataGridTextColumn x:Name="ColTransferRate" Header="Transfer rate" Binding="{Binding TransferRate}" Width="95" IsReadOnly="True"/>
+
+                    <!-- Time Left -->
+                    <DataGridTextColumn x:Name="ColTimeLeft" Header="Time left" Binding="{Binding TimeLeft}" Width="85" IsReadOnly="True"/>
+
+                    <!-- Last Try Date -->
+                    <DataGridTextColumn x:Name="ColLastTryDate" Header="Last Try Date" Binding="{Binding DateAdded, StringFormat={}{0:MMM dd HH:mm:ss yyyy}}" Width="145" IsReadOnly="True"/>
+
+                    <!-- Description / URL -->
+                    <DataGridTextColumn x:Name="ColUrl" Header="Description / URL" Binding="{Binding Url}" Width="*" IsReadOnly="True"/>
+
+                    <!-- Optional Columns (Toggleable) -->
+                    <DataGridTextColumn x:Name="ColFolder" Header="Save Path" Binding="{Binding Folder}" Width="200" Visibility="Collapsed" IsReadOnly="True"/>
+                    <DataGridTextColumn x:Name="ColCategory" Header="Category" Binding="{Binding CategoryDisplay}" Width="100" Visibility="Collapsed" IsReadOnly="True"/>
+                    <DataGridTextColumn x:Name="ColQuality" Header="Quality" Binding="{Binding SelectedQuality.QualityLabel}" Width="120" Visibility="Collapsed" IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <!-- 4. Clean Status Bar with Live Aggregate Speed -->
+        <StatusBar x:Name="MainStatusBar" Grid.Row="3" Background="#F1F5F9" BorderBrush="#E2E8F0" BorderThickness="0,1,0,0" Padding="8,0" Foreground="#475569">
+            <StatusBarItem>
+                <TextBlock x:Name="QueueStatusText" Text="Queue: Idle" FontWeight="Medium"/>
+            </StatusBarItem>
+            <Separator Background="#E2E8F0" Margin="6,2"/>
+            <StatusBarItem>
+                <TextBlock x:Name="WorkersStatusText" Text="Workers: 6"/>
+            </StatusBarItem>
+            <Separator Background="#E2E8F0" Margin="6,2"/>
+            <StatusBarItem>
+                <TextBlock Text="Clipboard Auto-Catch: Enabled"/>
+            </StatusBarItem>
+            <Separator Background="#E2E8F0" Margin="6,2"/>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="ItemsCountText" Text="0 item(s)" FontWeight="Medium"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

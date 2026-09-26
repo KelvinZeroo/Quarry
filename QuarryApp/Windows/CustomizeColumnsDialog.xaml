@@ -1,0 +1,47 @@
+<Window x:Class="QuarryApp.Windows.CustomizeColumnsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Customize Columns — Quarry" Height="420" Width="440"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#F8FAFC"
+        FontFamily="Manrope, Segoe UI, sans-serif" FontSize="12">
+
+    <Grid Margin="16,14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Select the columns you want to display in the downloads ledger:" Foreground="#334155" FontSize="11.5" Margin="0,0,0,10"/>
+
+        <!-- Column Checkbox List -->
+        <Border Grid.Row="1" Background="#FFFFFF" BorderBrush="#E2E8F0" BorderThickness="1" Padding="10" Margin="0,0,0,14">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="ColumnsPanel">
+                    <CheckBox x:Name="CheckFileName" Content="File Name" IsChecked="True" Margin="0,0,0,8" FontWeight="Medium" Foreground="#1E293B"/>
+                    <CheckBox x:Name="CheckSize" Content="Size" IsChecked="True" Margin="0,0,0,8" FontWeight="Medium" Foreground="#1E293B"/>
+                    <CheckBox x:Name="CheckStatus" Content="Status" IsChecked="True" Margin="0,0,0,8" FontWeight="Medium" Foreground="#1E293B"/>
+                    <CheckBox x:Name="CheckProgress" Content="Progress (Percentage &amp; Active Bar)" IsChecked="True" Margin="0,0,0,8" FontWeight="Medium" Foreground="#1E293B"/>
+                    <CheckBox x:Name="CheckTransferRate" Content="Transfer Rate (Speed)" IsChecked="True" Margin="0,0,0,8" FontWeight="Medium" Foreground="#1E293B"/>
+                    <CheckBox x:Name="CheckTimeLeft" Content="Time Left (ETA)" IsChecked="True" Margin="0,0,0,8" FontWeight="Medium" Foreground="#1E293B"/>
+                    <CheckBox x:Name="CheckLastTryDate" Content="Last Try Date" IsChecked="True" Margin="0,0,0,8" FontWeight="Medium" Foreground="#1E293B"/>
+                    <CheckBox x:Name="CheckUrl" Content="Description / Source URL" IsChecked="True" Margin="0,0,0,8" FontWeight="Medium" Foreground="#1E293B"/>
+                    <CheckBox x:Name="CheckFolder" Content="Save Path / Folder Location" IsChecked="False" Margin="0,0,0,8" FontWeight="Medium" Foreground="#1E293B"/>
+                    <CheckBox x:Name="CheckCategory" Content="Category" IsChecked="False" Margin="0,0,0,8" FontWeight="Medium" Foreground="#1E293B"/>
+                    <CheckBox x:Name="CheckQuality" Content="Quality / Stream Format" IsChecked="False" Margin="0,0,0,8" FontWeight="Medium" Foreground="#1E293B"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Actions -->
+        <DockPanel Grid.Row="2" LastChildFill="False">
+            <Button Content="Reset to Default" Width="120" Height="26" Click="ResetDefault_Click" Background="#F8F9FA" BorderBrush="#CBD5E1" FontWeight="Regular" Foreground="#1E293B"/>
+
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <Button Content="OK" Width="75" Height="26" IsDefault="True" Click="Ok_Click" Background="#2563EB" Foreground="#FFFFFF" FontWeight="SemiBold" BorderThickness="0" Margin="0,0,6,0"/>
+                <Button Content="Cancel" Width="75" Height="26" IsCancel="True" Click="Cancel_Click" Background="#F8F9FA" BorderBrush="#CBD5E1" FontWeight="Regular" Foreground="#1E293B"/>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>

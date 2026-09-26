@@ -34,6 +34,8 @@ Add `-Autostart` to start the server automatically when you log in:
   "delay": 0.2,
   "maxImages": 0,
   "maxGalleries": 10,
+  "maxScan": 2000,
+  "askAbove": 500,
   "proxy": ""
 }
 ```
@@ -46,6 +48,8 @@ Add `-Autostart` to start the server automatically when you log in:
 | `delay` | Minimum pause between requests to the same site (seconds). |
 | `maxImages` | Cap files per gallery (`0` = no cap). |
 | `maxGalleries` | Cap galleries crawled from a search/tag page. |
+| `maxScan` | How many files a site-wide scan may discover (`0` = no cap). Flag: `-MaxScan`. |
+| `askAbove` | Ask "really ALL?" when a scan found more files than this (`0` = never). Flag: `-AskAbove`. |
 | `proxy` | HTTP or SOCKS5 proxy URL, empty = none. |
 
 ## 4. Browser extension
@@ -83,6 +87,20 @@ Right-click the extension icon -> **Options** (or *Settings* in the popup):
 - **Download folder** - where the browser button saves (empty = server default)
 - **Server port** - must match `config.json`
 - **Max files per download** - `0` = everything
+- **Site scanning** - the same five options in the popup's Settings tab and
+  on the Options page (both share one storage key):
+  - *Scan whole site first (site roots)* - on by default, mirrors the CLI's
+    interactive scan
+  - *Also force-scan deep links* - CLI `--scan`
+  - *Ask "how many?" before downloading* - shows the question in the popup
+  - *Scan limit* - preset chips (`100 / 500 / 1,000 / 2,000 / 10,000 /
+    Unlimited`) plus a custom number; the scan stops at this many files
+  - *Confirm "download ALL" above* - second confirmation for large scans
+    (`0` = never ask)
+
+The popup's **Images** tab downloads images and videos from the current page
+(and the whole site when scanning is on). The **Video** tab (YouTube and
+other dedicated video sites) is coming soon.
 
 ## Troubleshooting
 

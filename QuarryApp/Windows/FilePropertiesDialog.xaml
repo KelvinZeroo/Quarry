@@ -1,0 +1,61 @@
+<Window x:Class="QuarryApp.Windows.FilePropertiesDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Download Properties" Height="360" Width="480"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="#F8FAFC"
+        FontFamily="Manrope, Segoe UI, sans-serif" FontSize="12">
+
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#FFFFFF" BorderBrush="#E2E8F0" BorderThickness="1" Padding="12" Margin="0,0,0,12">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="File Name:" FontWeight="SemiBold" Foreground="#475569"/>
+                    <TextBox x:Name="TitleText" Grid.Row="0" Grid.Column="1" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#1E293B" TextWrapping="Wrap"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="File Path:" FontWeight="SemiBold" Foreground="#475569"/>
+                    <TextBox x:Name="PathText" Grid.Row="2" Grid.Column="1" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#1E293B" TextWrapping="Wrap"/>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Source URL:" FontWeight="SemiBold" Foreground="#475569"/>
+                    <TextBox x:Name="UrlText" Grid.Row="4" Grid.Column="1" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#2563EB" TextWrapping="Wrap"/>
+
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="File Size:" FontWeight="SemiBold" Foreground="#475569"/>
+                    <TextBlock x:Name="SizeText" Grid.Row="6" Grid.Column="1" Foreground="#1E293B"/>
+
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="Status:" FontWeight="SemiBold" Foreground="#475569"/>
+                    <TextBlock x:Name="StatusText" Grid.Row="8" Grid.Column="1" Foreground="#1E293B"/>
+
+                    <TextBlock Grid.Row="10" Grid.Column="0" Text="Date Added:" FontWeight="SemiBold" Foreground="#475569"/>
+                    <TextBlock x:Name="DateText" Grid.Row="10" Grid.Column="1" Foreground="#1E293B"/>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Close" Width="75" Height="26" IsDefault="True" IsCancel="True" Click="Close_Click" Background="#2563EB" Foreground="#FFFFFF" FontWeight="SemiBold" BorderThickness="1" BorderBrush="#1D4ED8"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -77,8 +77,16 @@
             <tr><td><code>-Open</code></td><td>Open the folder when it finishes.</td></tr>
             <tr><td><code>-Quiet</code></td><td>Summary only (no per-file lines).</td></tr>
             <tr><td><code>-Site erome</code></td><td>Advanced: force an adapter
-                (<code>imagefap</code>, <code>pornpics</code>, <code>erome</code>,
-                <code>rule34</code>, <code>generic</code>).</td></tr>
+                (<code>createaiasian</code>, <code>imagefap</code>, <code>pornpics</code>,
+                <code>erome</code>, <code>rule34</code>, <code>generic</code>).</td></tr>
+            <tr><td><code>-Scan</code></td><td>Scan the whole site (sitemaps + links)
+                before downloading, then ask how many files to take.</td></tr>
+            <tr><td><code>-MaxScan 5000</code></td><td>Scan cap: discover at most
+                5000 files (<code>0</code> = no cap, default 2000).</td></tr>
+            <tr><td><code>-AskAbove 1000</code></td><td>Ask "really ALL?" when the
+                scan found more than 1000 files (<code>0</code> = never, default 500).</td></tr>
+            <tr><td><code>-Yes</code></td><td>Never ask: take everything the scan
+                finds (up to <code>-MaxScan</code>).</td></tr>
             <tr><td><code>-File urls.txt</code></td><td>Batch: one URL per line,
                 <code>#</code> starts a comment.</td></tr>
             <tr><td><code>-ListSites</code></td><td>Show supported sites.</td></tr>
@@ -100,6 +108,8 @@
   "delay": 0.2,
   "maxImages": 0,
   "maxGalleries": 10,
+  "maxScan": 2000,
+  "askAbove": 500,
   "proxy": ""
 }</pre>
       <div class="tbl-wrap">
@@ -132,6 +142,16 @@
             <tr>
               <td><code>maxGalleries</code></td>
               <td>Cap galleries crawled from a search/tag page.</td>
+            </tr>
+            <tr>
+              <td><code>maxScan</code></td>
+              <td>How many files a site-wide scan may discover
+                  (<code>0</code> = no cap). Flag: <code>-MaxScan</code>.</td>
+            </tr>
+            <tr>
+              <td><code>askAbove</code></td>
+              <td>Ask "really ALL?" when a scan found more files than this
+                  (<code>0</code> = never). Flag: <code>-AskAbove</code>.</td>
             </tr>
             <tr>
               <td><code>proxy</code></td>
@@ -230,14 +250,28 @@
             <tr>
               <td><code>POST /download</code></td>
               <td>body <code>{"url":...,"destDir":...,"cookies":[...],"pageMedia":[...],"maxImages":n}</code>
-                  -&gt; <code>{"jobId":...}</code></td>
+                  -&gt; <code>{"jobId":...}</code><br>
+                  optional site-scan fields (absent = old behavior):
+                  <code>autoScan</code>, <code>scan</code>, <code>askHowMany</code>,
+                  <code>maxScan</code> (0 = no cap), <code>askAbove</code></td>
+            </tr>
+            <tr>
+              <td><code>POST /answer</code></td>
+              <td>body <code>{"jobId":...,"count":n}</code> answers a parked scan
+                  question (<code>"count":null</code> cancels) -&gt;
+                  <code>{"ok":true}</code>; no answer for 10 minutes cancels</td>
+            </tr>
+            <tr>
+              <td><code>POST /cancel</code></td>
+              <td>body <code>{"jobId":...}</code> stops and removes a job
+                  (also unblocks its question)</td>
             </tr>
             <tr>
               <td><code>GET /status/&lt;jobId&gt;</code></td>
               <td>progress: <code>state</code>, <code>title</code>,
                   <code>folder</code>, <code>total</code>, <code>downloaded</code>,
                   <code>skipped</code>, <code>failed</code>, <code>error</code>,
-                  <code>log</code></td>
+                  <code>prompt</code>, <code>log</code></td>
             </tr>
             <tr>
               <td><code>POST /reveal</code></td>

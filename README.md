@@ -1,59 +1,62 @@
-# Quarry
+# Quarry — Native Media Downloader & Archiver (.NET 10)
 
-Download images, GIFs and videos from any page - from PowerShell or straight
-from your browser.
+Quarry is a standalone native Windows desktop application built with **C# and .NET 10 (WPF)** designed in the classic **Internet Download Manager (IDM)** style.
 
-- **One universal command** - the site is detected automatically, no per-site flags
-- **Browser extension** for Chrome and Firefox: open a page, press *Download*
-- **Clean output** - short folders, files named `0001_...`, plus an
-  `info.txt` in every folder with the source link
-- **Re-running is free** - finished files are skipped, failed ones retried
-- **Works everywhere** - ImageFap, PornPics, EroMe, Rule34, and any other page
-  (best effort, see [docs/guides/sites.md](docs/guides/sites.md))
-
-## Quick start
-
-```powershell
-.\install.ps1              # checks Python, installs dependencies
-.\quarry.ps1 <url>         # download any gallery or page
-```
-
-`.\download.ps1` is kept as an alias of `quarry.ps1`.
-
-No git? Browser zips: [Releases](https://github.com/KelvinZeroo/Quarry/releases)
-(`quarry-chrome.zip` / `quarry-firefox.zip`).
-
-For the browser button:
-
-```powershell
-.\start.ps1               # local server the extension talks to
-```
-
-Then load `extension/` into Chrome or Firefox - [docs/guides/setup.md](docs/guides/setup.md).
-
-## Examples
-
-```powershell
-.\quarry.ps1 "https://www.erome.com/a/abc1234"
-.\quarry.ps1 "https://www.pornpics.com/galleries/example-12345/" -Out "D:\Media"
-.\quarry.ps1 "https://www.imagefap.com/search/cats" -MaxGalleries 5
-.\quarry.ps1 -File urls.txt -DryRun
-```
-
-## Documentation
-
-| | |
-|---|---|
-| [docs/guides/setup.md](docs/guides/setup.md) | install, config, browser extension |
-| [docs/guides/usage.md](docs/guides/usage.md) | CLI flags, folders, browser button |
-| [docs/guides/sites.md](docs/guides/sites.md) | supported sites and limits |
-
-Website (open `docs/index.html` in a browser): Home, Download and Usage
-pages in `docs/`.
-
-Settings live in `config.json` (`downloadDir`, `port`, `workers`, `delay`).
+It has **zero browser dependencies** (no Chrome, Edge, Electron, Node.js, or WebViews).
 
 ---
 
-**Personal use only.** You are responsible for what you download and where you
-store it. Respect the terms of service and copyright of every site you use.
+## ⚡ Features
+
+- **100% Standalone Native Desktop App**: Fast, lightweight WPF GUI with classic IDM layout (Menu Bar, Action Ribbon, Category Tree, Sharp DataGrid).
+- **Clipboard Auto-Catch**: Automatically monitors the Windows clipboard and pops up an Add Download dialog when a supported media link is copied.
+- **Site Grabber**: Multi-depth crawl wizard and XML sitemap scanner to bulk archive whole galleries or websites.
+- **High Performance Downloader**: Multi-threaded async engine with SHA-256 deduplication and `.quarry_manifest.json` metadata tracking.
+- **Embedded Local Server**: Built-in HTTP server listening on `127.0.0.1:8765` for 1-click browser extension capture.
+- **Site Adapters Included**:
+  - EroMe (Albums, Photos & HD Videos)
+  - PornPics (Galleries & Search Tags)
+  - Booru / Rule34 (Tag Search & High-Res Posts)
+  - ImageFap (Galleries & Albums)
+  - CreateAIAsian (Posts & Sitemaps)
+  - Instagram (Media Scraping)
+  - Generic / Fallback (Universal HTML page image & video extractor)
+
+---
+
+## 🚀 Quick Start
+
+### Option 1: Run the Standalone App
+Double-click `Quarry.bat` or run:
+```powershell
+.\Start-Quarry.ps1
+```
+Or directly launch:
+```text
+QuarryApp\bin\Publish\QuarryApp.exe
+```
+
+### Option 2: Build & Run from Source (.NET 10 SDK)
+```powershell
+dotnet run --project ./QuarryApp/QuarryApp.csproj
+```
+
+---
+
+## 📁 Project Structure
+
+```
+Quarry/
+├── QuarryApp/                    # Complete C# .NET 10 Application
+│   ├── Adapters/                 # Site scrapers & parsers
+│   ├── Core/                     # DownloadEngine, HttpClient, Config, Scanner
+│   ├── Models/                   # DownloadJob, Gallery, ImageItem, Settings
+│   ├── Server/                   # LocalApiServer (127.0.0.1:8765)
+│   ├── Windows/                  # AddDownloadDialog, SiteGrabberDialog
+│   ├── MainWindow.xaml           # IDM UI View
+│   ├── MainWindow.xaml.cs        # IDM UI Controller & Logic
+│   └── QuarryApp.csproj          # .NET 10 Project File
+├── extension/                    # Browser extension for 1-click send to Quarry
+├── Start-Quarry.ps1              # 1-Click Launch Script
+└── Quarry.bat                    # Windows Batch Launcher
+```

@@ -5,5 +5,7 @@
   "delay": 0.2,
   "maxImages": 0,
   "maxGalleries": 10,
+  "maxScan": 2000,
+  "askAbove": 500,
   "proxy": ""
 }

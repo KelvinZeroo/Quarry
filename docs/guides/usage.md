@@ -23,6 +23,10 @@ generic mode (grabs every image/GIF/video the page offers).
 .\quarry.ps1 <url> -Open                # open the folder when it finishes
 .\quarry.ps1 <url> -Quiet               # summary only (no per-file lines)
 .\quarry.ps1 <url> -Site erome          # advanced: force an adapter
+.\quarry.ps1 <url> -Scan                # scan the whole site before downloading
+.\quarry.ps1 <url> -MaxScan 5000        # scan cap: discover at most 5000 files (0 = no cap)
+.\quarry.ps1 <url> -AskAbove 1000       # ask "really ALL?" above 1000 files (0 = never)
+.\quarry.ps1 <url> -Yes                 # never ask: take everything the scan finds
 .\quarry.ps1 -File urls.txt             # batch: one URL per line
 .\quarry.ps1 -ListSites                 # show supported sites
 .\quarry.ps1 -Version                   # print version and exit
@@ -33,6 +37,39 @@ generic mode (grabs every image/GIF/video the page offers).
 
 PowerShell users can also call the engine directly:
 `python main.py <url> [flags]` (same flags with `--`).
+
+## Scanning a whole site
+
+Some sites are apps: the raw HTML of the front page hides almost everything,
+so one page only shows a handful of files. For those, Quarry can **scan the
+whole site first** (sitemap index -> every page -> media), then ask what you
+actually want:
+
+```powershell
+.\quarry.ps1 "https://www.example.com/"
+```
+
+```
+[createaiasian] https://www.example.com/
+  found 2000 file(s) from sitemaps  [scan cap reached - use -MaxScan N, 0 = no cap]
+  Download how many? [Enter = all 2000 | 1-2000 | q = quit] > 600
+  Example.com - 600 file(s)
+  downloaded 600, skipped 0, failed 0
+```
+
+- **site roots scan automatically**; deep links stay single-page unless you
+  pass `-Scan`
+- scanning stops at `-MaxScan` files (default **2000**, `0` = no cap)
+- a typed number (600) downloads exactly that many - no second question
+- `Enter` takes everything; if that count exceeds `-AskAbove` (default
+  **500**, `0` = never) Quarry asks once more before going all-in
+- invalid input asks again; `q` or Ctrl+C cancels cleanly (exit 0, nothing
+  downloaded)
+- `-m/-MaxImages` is a pre-set choice: no question is asked
+- `-Yes` never asks - it takes the whole scan (up to `-MaxScan`)
+
+Non-interactive runs behave exactly as before: batch files, piped output and
+the extension/server never prompt (add `-Scan`/`-Yes` to scan on purpose).
 
 ## Where files go
 
@@ -90,8 +127,15 @@ galleries it links to (capped by `maxGalleries`, default 10):
 
 1. Start the server: `.\start.ps1` (or install with `-Autostart`)
 2. Open any page in Chrome/Firefox
-3. Click the extension icon -> **Download this page**
+3. Click the extension icon -> **Images** tab -> **Download All Media**
 4. Watch the progress; **Open folder** when done
+
+The popup has three tabs:
+
+- **Images** - the downloader. It saves images *and* videos from the page,
+  and (with site scanning on) can sweep the whole site first
+- **Video** - dedicated YouTube / video-site support, *coming soon*
+- **Settings** - folder, port, theme and the site-scanning options
 
 What it does:
 
@@ -99,8 +143,11 @@ What it does:
   HTML does not contain)
 - forwards your browser cookies, so age-gated / logged-in pages work
 - saves to the folder from the extension settings (gear icon)
+- scans the whole site first (site roots) and asks *Download how many?* before
+  it starts - answer inline in the popup, or close it and answer later
 
-Closing the popup does not stop the download - reopen it to see the progress.
+Closing the popup does not stop the download - reopen it to see the progress
+(and any pending question; unanswered questions cancel after 10 minutes).
 The badge on the icon shows the file count while running.
 
 ## Server API (optional)
@@ -112,7 +159,25 @@ websites are rejected):
 |---|---|
 | `GET /health` | `{"ok":true,"version":...,"downloadDir":...}` |
 | `POST /download` | body `{"url":...,"destDir":...,"cookies":[...],"pageMedia":[...],"maxImages":n}` -> `{"jobId":...}` |
-| `GET /status/<jobId>` | progress: `state`, `title`, `folder`, `total`, `downloaded`, `skipped`, `failed`, `error`, `log` |
+| `POST /answer` | body `{"jobId":...,"count":n}` answers a parked scan question (`"count":null` cancels) -> `{"ok":true}` |
+| `POST /cancel` | body `{"jobId":...}` stops and removes a job (also unblocks its question) |
+| `GET /status/<jobId>` | progress: `state`, `title`, `folder`, `total`, `downloaded`, `skipped`, `failed`, `error`, `prompt`, `log` |
 | `POST /reveal` | body `{"path":"..."}` opens that folder in the file manager |
+
+`POST /download` also accepts the site-scan options - all optional, and an
+old extension that omits them behaves exactly as before:
+
+| Field | Meaning |
+|---|---|
+| `autoScan` | `true` = site roots scan the whole site (the CLI's TTY behavior) |
+| `scan` | `true` = force-scan every URL (CLI `--scan`) |
+| `askHowMany` | `true` = scan first, then park the job in `state:"asking"` with `prompt:{"found":n,"askAbove":n}` |
+| `maxScan` | files a scan may discover (`0` = no cap, default `2000`) |
+| `askAbove` | confirm before downloading all above this count (default `500`) |
+
+While asking, poll `GET /status/<jobId>` until `state` is `"asking"`, then
+reply with `POST /answer` - `count` as an integer downloads exactly that many,
+`null` cancels (nothing is downloaded). No answer within 10 minutes cancels
+the run, mirroring EOF at the CLI prompt.
 
 Next: [sites.md](sites.md) - [setup.md](setup.md) - [../README.md](../../README.md)
